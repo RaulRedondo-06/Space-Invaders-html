@@ -3,9 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Space Invaders</title>
+    <link rel="stylesheet" href="SP.css">
 </head>
 <body>
-    
+    <div class="wrap">
+        <div class="game-wrapper">
+          <div class="game"></div>
+          <div class="congratulations">
+            <h1>¡Felicidades!</h1>
+            <h2>El jugador x gano el juego</h2>
+            <button class="btn" onclick="window.location.reload()">Restart</button>
+          </div>
+          <div class="game-over">
+            <h1>GAME OVER</h1>
+            <h2>Perdisteis</h2>
+            <button class="btn" onclick="window.location.reload()">Restart</button>
+          </div>
+        </div>
+        <footer>Pulsa "A" o "D" para moverse</footer>
+      </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="SP.js"></script>
 </body>
 </html>
