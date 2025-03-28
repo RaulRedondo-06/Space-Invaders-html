@@ -1,60 +1,58 @@
 const GAME_WIDTH = 800;
 const GAME_HEIGHT = 600;
-const ENEMY_WIDTH = 50; // Ancho de cada enemigo
-const ENEMY_HEIGHT = 40; // Alto de cada enemigo
+const ENEMY_WIDTH = 50;
+const ENEMY_HEIGHT = 40;
+const BULLET_WIDTH = 5;
+const BULLET_HEIGHT = 10;
+const BULLET_SPEED = 7;
 
-const KEY_CODE_LEFT = 65; // "A" para izquierda
-const KEY_CODE_RIGHT = 68; // "D" para derecha
+const KEY_CODE_LEFT = 65;
+const KEY_CODE_RIGHT = 68;
+const KEY_CODE_SPACE = 32;
 
 const GAME_STATE = {
     playerX: GAME_WIDTH / 2,
     playerY: GAME_HEIGHT - 50,
-    speed: 5, // Velocidad del jugador
-    velocityX: 0, // Velocidad horizontal del jugador
+    speed: 5,
+    velocityX: 0,
     enemies: [],
-    enemySpeed: 2, // Velocidad de los enemigos
-    enemyDirection: 1, // Dirección de movimiento de los enemigos (1 para derecha, -1 para izquierda)
-    gameOver: false, // Estado del juego (si ha terminado o no)
+    bullets: [],
+    enemySpeed: 2,
+    enemyDirection: 1,
+    gameOver: false,
 };
 
-// Crear el jugador
 function createPlayer($container) {
     const $player = document.createElement("img");
-    $player.src = "img/player.png"; // Coloca aquí la imagen del jugador
+    $player.src = "img/player1.png";
     $player.className = "player";
     $container.appendChild($player);
     setPosition($player, GAME_STATE.playerX, GAME_STATE.playerY);
 }
 
-// Configurar la posición de los elementos
 function setPosition($el, x, y) {
     $el.style.transform = `translate(${x}px, ${y}px)`;
 }
 
-// Crear enemigos
 function createEnemies($container) {
     const enemyRows = 4;
     const enemyCols = 5;
-
-    const horizontalSpacing = 10;  // Espacio entre enemigos horizontalmente
-    const verticalSpacing = 10;    // Espacio entre enemigos verticalmente
-
-    // Las posiciones iniciales de los enemigos
-    const initialY = 50; // Fila inicial de enemigos, la primera fila estará aquí
+    const horizontalSpacing = 10;
+    const verticalSpacing = 10;
+    const initialY = 50;
     const initialX = 50;
 
     for (let row = 0; row < enemyRows; row++) {
         for (let col = 0; col < enemyCols; col++) {
             const $enemy = document.createElement("img");
-            $enemy.src = "img/enemy.png"; // Coloca aquí la imagen del enemigo
+            $enemy.src = "img/enemy.gif";
             $enemy.className = "enemy";
 
-            const xPos = initialX + col * (ENEMY_WIDTH + horizontalSpacing);  // Posición X
-            const yPos = initialY + row * (ENEMY_HEIGHT + verticalSpacing);   // Posición Y para cada fila (se desplaza hacia abajo por fila)
+            const xPos = initialX + col * (ENEMY_WIDTH + horizontalSpacing);
+            const yPos = initialY + row * (ENEMY_HEIGHT + verticalSpacing);
             $container.appendChild($enemy);
             setPosition($enemy, xPos, yPos);
 
-            // Añadir los enemigos al estado del juego
             GAME_STATE.enemies.push({
                 element: $enemy,
                 x: xPos,
@@ -67,42 +65,33 @@ function createEnemies($container) {
     }
 }
 
-// Mover enemigos horizontalmente
 function moveEnemies() {
     let changeDirection = false;
 
     GAME_STATE.enemies.forEach((enemy) => {
-        if (enemy.alive) {
-            // Mover enemigos horizontalmente según la dirección
-            enemy.x += GAME_STATE.enemySpeed * GAME_STATE.enemyDirection;
+        enemy.x += GAME_STATE.enemySpeed * GAME_STATE.enemyDirection;
 
-            // Comprobar si el enemigo ha llegado al borde
-            if (enemy.x >= GAME_WIDTH - ENEMY_WIDTH || enemy.x <= 30) {
-                changeDirection = true; // Marcar que deben cambiar de dirección
-            }
-
-            // Aplicar movimiento y posición a cada enemigo
-            setPosition(enemy.element, enemy.x, enemy.y);
+        if (enemy.x >= GAME_WIDTH - ENEMY_WIDTH || enemy.x <= 30) {
+            changeDirection = true;
         }
+
+        setPosition(enemy.element, enemy.x, enemy.y);
     });
 
-    // Cambiar dirección de los enemigos si han llegado al borde
     if (changeDirection) {
-        GAME_STATE.enemyDirection = -GAME_STATE.enemyDirection; // Invertir dirección
+        GAME_STATE.enemyDirection = -GAME_STATE.enemyDirection;
     }
 }
 
-// Actualizar la posición del jugador de manera suave
 function updatePlayerPosition() {
-    if (GAME_STATE.gameOver) return; // Detener el movimiento si el juego ha terminado
+    if (GAME_STATE.gameOver) return;
 
     GAME_STATE.playerX += GAME_STATE.velocityX;
 
-    // Limitar la posición del jugador dentro de la pantalla
     if (GAME_STATE.playerX < 0) {
         GAME_STATE.playerX = 0;
     }
-    if (GAME_STATE.playerX > GAME_WIDTH - 50) { // Asumiendo que el ancho del jugador es 50
+    if (GAME_STATE.playerX > GAME_WIDTH - 50) {
         GAME_STATE.playerX = GAME_WIDTH - 50;
     }
 
@@ -112,44 +101,101 @@ function updatePlayerPosition() {
     }
 }
 
-// Bucle principal del juego
+// --- SISTEMA DE DISPARO ---
+function createBullet($container) {
+    const $bullet = document.createElement("div");
+    $bullet.className = "bullet";
+    $container.appendChild($bullet);
+
+    const bulletX = GAME_STATE.playerX + 22;
+    const bulletY = GAME_STATE.playerY;
+    GAME_STATE.bullets.push({
+        element: $bullet,
+        x: bulletX,
+        y: bulletY,
+    });
+
+    setPosition($bullet, bulletX, bulletY);
+}
+
+function moveBullets() {
+    GAME_STATE.bullets.forEach((bullet, index) => {
+        bullet.y -= BULLET_SPEED;
+        if (bullet.y < 0) {
+            bullet.element.remove();
+            GAME_STATE.bullets.splice(index, 1);
+        } else {
+            setPosition(bullet.element, bullet.x, bullet.y);
+        }
+    });
+}
+
+function checkBulletCollision() {
+    GAME_STATE.bullets.forEach((bullet, bulletIndex) => {
+        GAME_STATE.enemies.forEach((enemy) => {
+            if (enemy.alive &&
+                bullet.x < enemy.x + ENEMY_WIDTH &&
+                bullet.x + BULLET_WIDTH > enemy.x &&
+                bullet.y < enemy.y + ENEMY_HEIGHT &&
+                bullet.y + BULLET_HEIGHT > enemy.y) {
+
+                // Apply "dead" class to the enemy (just visual)
+                enemy.alive = false;
+                enemy.element.classList.add("dead");
+
+                // Remove bullet from game state
+                bullet.element.remove();
+                GAME_STATE.bullets.splice(bulletIndex, 1);
+
+                // "Revive" the enemy after 2 seconds
+                setTimeout(() => {
+                    enemy.alive = true;
+                    enemy.element.classList.remove("dead");
+                }, 2000);
+            }
+        });
+    });
+}
+
 function gameLoop() {
     if (GAME_STATE.gameOver) {
-        showGameOver(); // Mostrar mensaje de Game Over
+        showGameOver();
         return;
     }
 
     updatePlayerPosition();
     moveEnemies();
-    requestAnimationFrame(gameLoop); // Llamar de nuevo para el siguiente frame
+    moveBullets(); // 👈 añadido
+    checkBulletCollision(); // 👈 añadido
+
+    requestAnimationFrame(gameLoop);
 }
 
-// Mostrar el mensaje de Game Over
 function showGameOver() {
     const gameOverDiv = document.querySelector(".game-over");
-    gameOverDiv.style.display = "block"; // Mostrar la pantalla de "Game Over"
+    gameOverDiv.style.display = "block";
 }
 
-// Inicializar el juego
 function init() {
     const $container = document.querySelector(".game");
     createPlayer($container);
     createEnemies($container);
-    requestAnimationFrame(gameLoop); // Iniciar el loop de animación
+    requestAnimationFrame(gameLoop);
 }
 
-// Eventos de teclado para mover al jugador
 function onKeyDown(e) {
     if (e.keyCode === KEY_CODE_LEFT && GAME_STATE.velocityX >= 0) {
-        GAME_STATE.velocityX = -GAME_STATE.speed; // Mover a la izquierda solo si no está moviéndose a la derecha
+        GAME_STATE.velocityX = -GAME_STATE.speed;
     } else if (e.keyCode === KEY_CODE_RIGHT && GAME_STATE.velocityX <= 0) {
-        GAME_STATE.velocityX = GAME_STATE.speed; // Mover a la derecha solo si no está moviéndose a la izquierda
+        GAME_STATE.velocityX = GAME_STATE.speed;
+    } else if (e.keyCode === KEY_CODE_SPACE) {
+        const $container = document.querySelector(".game");
+        createBullet($container);
     }
 }
 
 function onKeyUp(e) {
     if (e.keyCode === KEY_CODE_LEFT || e.keyCode === KEY_CODE_RIGHT) {
-        // De esta manera el jugador puede cambiar de dirección sin detenerse instantáneamente.
         if (e.keyCode === KEY_CODE_LEFT && GAME_STATE.velocityX < 0) {
             GAME_STATE.velocityX = 0;
         } else if (e.keyCode === KEY_CODE_RIGHT && GAME_STATE.velocityX > 0) {
@@ -158,7 +204,6 @@ function onKeyUp(e) {
     }
 }
 
-// Esperar a que el DOM esté completamente cargado antes de inicializar
 document.addEventListener('DOMContentLoaded', init);
 document.addEventListener('keydown', onKeyDown);
 document.addEventListener('keyup', onKeyUp);
