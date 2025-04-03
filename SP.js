@@ -1,3 +1,4 @@
+
 const GAME_WIDTH = 800;
 const GAME_HEIGHT = 600;
 const ENEMY_WIDTH = 50;
@@ -12,13 +13,21 @@ const KEY_CODE_LEFT = 65;
 const KEY_CODE_RIGHT = 68;
 const KEY_CODE_SPACE = 32;
 
+const KEY_CODE_LEFT2 = 37;
+const KEY_CODE_RIGHT2 = 39;
+const KEY_CODE_ZERO = 96;
+
 const GAME_STATE = {
-    playerX: GAME_WIDTH / 2,
+    playerX: GAME_WIDTH / 2 - 100,
     playerY: GAME_HEIGHT - 50,
+    playerX2: GAME_WIDTH / 2 + 100,
+    playerY2: GAME_HEIGHT - 50,
     speed: 5,
     velocityX: 0,
+    velocityX2: 0,
     enemies: [],
     bullets: [],
+    bullets2: [],
     enemySpeed: 2,
     enemyDirection: 1,
     gameOver: false,
@@ -26,11 +35,15 @@ const GAME_STATE = {
 
 function createPlayer($container) {
     const $player = document.createElement("img");
+    const $player2 = document.createElement("img");
     $player.src = "img/player1.png";
+    $player2.src = "img/player2.png";
     $player.className = "player";
+    $player2.className = "player2";
     $container.appendChild($player);
+    $container.appendChild($player2);
     setPosition($player, GAME_STATE.playerX, GAME_STATE.playerY);
-    
+    setPosition($player2, GAME_STATE.playerX2, GAME_STATE.playerY2);
 }
 
 function Win(puntuacion)
@@ -99,6 +112,7 @@ function updatePlayerPosition() {
     if (GAME_STATE.gameOver) return;
 
     GAME_STATE.playerX += GAME_STATE.velocityX;
+    GAME_STATE.playerX2 += GAME_STATE.velocityX2;
 
     if (GAME_STATE.playerX < 0) {
         GAME_STATE.playerX = 0;
@@ -110,6 +124,18 @@ function updatePlayerPosition() {
     const $player = document.querySelector(".player");
     if ($player) {
         setPosition($player, GAME_STATE.playerX, GAME_STATE.playerY);
+    }
+
+    if (GAME_STATE.playerX2 < 0) {
+        GAME_STATE.playerX2 = 0;
+    }
+    if (GAME_STATE.playerX2 > GAME_WIDTH - 50) {
+        GAME_STATE.playerX2 = GAME_WIDTH - 50;
+    }
+
+    const $player2 = document.querySelector(".player2");
+    if ($player2) {
+        setPosition($player2, GAME_STATE.playerX2, GAME_STATE.playerY2);
     }
 }
 
@@ -130,12 +156,38 @@ function createBullet($container) {
     setPosition($bullet, bulletX, bulletY);
 }
 
+function createBullet2($container) {
+    const $bullet = document.createElement("div");
+    $bullet.className = "bullet2";
+    $container.appendChild($bullet);
+
+    const bulletX = GAME_STATE.playerX2 + 22;
+    const bulletY = GAME_STATE.playerY2;
+    GAME_STATE.bullets2.push({
+        element: $bullet,
+        x: bulletX,
+        y: bulletY,
+    });
+
+    setPosition($bullet, bulletX, bulletY);
+}
+
 function moveBullets() {
     GAME_STATE.bullets.forEach((bullet, index) => {
         bullet.y -= BULLET_SPEED;
         if (bullet.y < 0) {
             bullet.element.remove();
             GAME_STATE.bullets.splice(index, 1);
+        } else {
+            setPosition(bullet.element, bullet.x, bullet.y);
+        }
+    });
+
+    GAME_STATE.bullets2.forEach((bullet, index) => {
+        bullet.y -= BULLET_SPEED;
+        if (bullet.y < 0) {
+            bullet.element.remove();
+            GAME_STATE.bullets2.splice(index, 1);
         } else {
             setPosition(bullet.element, bullet.x, bullet.y);
         }
@@ -176,6 +228,31 @@ function checkBulletCollision() {
             }
         });
     });
+
+    GAME_STATE.bullets2.forEach((bullet, bulletIndex) => {
+        GAME_STATE.enemies.forEach((enemy) => {
+            if (enemy.alive &&
+                bullet.x < enemy.x + ENEMY_WIDTH &&
+                bullet.x + BULLET_WIDTH > enemy.x &&
+                bullet.y < enemy.y + ENEMY_HEIGHT &&
+                bullet.y + BULLET_HEIGHT > enemy.y) {
+
+                // Apply "dead" class to the enemy (just visual)
+                enemy.alive = false;
+                enemy.element.classList.add("dead");
+
+                // Remove bullet from game state
+                bullet.element.remove();
+                GAME_STATE.bullets2.splice(bulletIndex, 1);
+
+                // "Revive" the enemy after 2 seconds
+                setTimeout(() => {
+                    enemy.alive = true;
+                    enemy.element.classList.remove("dead");
+                }, 2000);
+            }
+        });
+    });
 }
 
 function gameLoop() {
@@ -193,8 +270,8 @@ function gameLoop() {
     }
     updatePlayerPosition();
     moveEnemies();
-    moveBullets(); // 👈 añadido
-    checkBulletCollision(); // 👈 añadido
+    moveBullets();
+    checkBulletCollision();
 
     requestAnimationFrame(gameLoop);
 }
@@ -220,6 +297,15 @@ function onKeyDown(e) {
         const $container = document.querySelector(".game");
         createBullet($container);
     }
+
+    if (e.keyCode === KEY_CODE_LEFT2 && GAME_STATE.velocityX2 >= 0) {
+        GAME_STATE.velocityX2 = -GAME_STATE.speed;
+    } else if (e.keyCode === KEY_CODE_RIGHT2 && GAME_STATE.velocityX2 <= 0) {
+        GAME_STATE.velocityX2 = GAME_STATE.speed;
+    } else if (e.keyCode === KEY_CODE_ZERO) {
+        const $container = document.querySelector(".game");
+        createBullet2($container);
+    }
 }
 
 function onKeyUp(e) {
@@ -228,6 +314,14 @@ function onKeyUp(e) {
             GAME_STATE.velocityX = 0;
         } else if (e.keyCode === KEY_CODE_RIGHT && GAME_STATE.velocityX > 0) {
             GAME_STATE.velocityX = 0;
+        }
+    }
+
+    if (e.keyCode === KEY_CODE_LEFT2 || e.keyCode === KEY_CODE_RIGHT2) {
+        if (e.keyCode === KEY_CODE_LEFT2 && GAME_STATE.velocityX2 < 0) {
+            GAME_STATE.velocityX2 = 0;
+        } else if (e.keyCode === KEY_CODE_RIGHT2 && GAME_STATE.velocityX2 > 0) {
+            GAME_STATE.velocityX2 = 0;
         }
     }
 }
