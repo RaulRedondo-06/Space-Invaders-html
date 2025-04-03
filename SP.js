@@ -5,6 +5,8 @@ const ENEMY_HEIGHT = 40;
 const BULLET_WIDTH = 5;
 const BULLET_HEIGHT = 10;
 const BULLET_SPEED = 7;
+var POINTS_FRISTPLAYER = 0;
+var POINTS_SECONDPLAYER = 0;
 
 const KEY_CODE_LEFT = 65;
 const KEY_CODE_RIGHT = 68;
@@ -28,7 +30,17 @@ function createPlayer($container) {
     $player.className = "player";
     $container.appendChild($player);
     setPosition($player, GAME_STATE.playerX, GAME_STATE.playerY);
+    
 }
+
+function Win(puntuacion)
+{
+    console.log(puntuacion);
+    const win = document.querySelector(".congratulations");
+    win.style.display = "block";
+}
+
+
 
 function setPosition($el, x, y) {
     $el.style.transform = `translate(${x}px, ${y}px)`;
@@ -147,6 +159,15 @@ function checkBulletCollision() {
                 bullet.element.remove();
                 GAME_STATE.bullets.splice(bulletIndex, 1);
 
+                //Sumar 1 punto
+
+                POINTS_FRISTPLAYER = POINTS_FRISTPLAYER + 1;
+                POINTS_SECONDPLAYER = POINTS_SECONDPLAYER + 1;
+                
+                document.getElementById("pun1").innerHTML = "Player 1: " + POINTS_FRISTPLAYER;
+                document.getElementById("pun2").innerHTML = "Player 2: " + POINTS_SECONDPLAYER;
+               
+
                 // "Revive" the enemy after 2 seconds
                 setTimeout(() => {
                     enemy.alive = true;
@@ -162,7 +183,14 @@ function gameLoop() {
         showGameOver();
         return;
     }
-
+    if (POINTS_FRISTPLAYER == 100) {
+        document.getElementById("cong").innerHTML = "El jugador 1 gano el juego";
+        Win(POINTS_FRISTPLAYER)
+    }
+    if (POINTS_SECONDPLAYER == 100) {
+        document.getElementById("cong").innerHTML = "El jugador 2 gano el juego";
+        Win(POINTS_SECONDPLAYER)
+    }
     updatePlayerPosition();
     moveEnemies();
     moveBullets(); // 👈 añadido

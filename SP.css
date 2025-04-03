@@ -76,6 +76,20 @@ footer {
   height: 30px;
 }
 
+.exterioresRed {
+  position: absolute;
+  margin-left: -70%;
+  height: 20px;
+  color: red;
+}
+
+.exterioresBlue {
+  position: absolute;
+  margin-left: 70%;
+  height: 20px;
+  color: blue;
+}
+
 .congratulations {
   display: none;
   position: absolute;
@@ -87,6 +101,8 @@ footer {
   text-align: center;
   animation: pop-in 1s;
 }
+
+
 
 .game-over {
   display: none;
