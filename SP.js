@@ -8,6 +8,8 @@ const BULLET_HEIGHT = 10;
 const BULLET_SPEED = 7;
 var POINTS_FRISTPLAYER = 0;
 var POINTS_SECONDPLAYER = 0;
+var LIVE_FRISTPLAYER = 5;
+var LIVE_SECONDPLAYER = 5;
 
 const KEY_CODE_LEFT = 65;
 const KEY_CODE_RIGHT = 68;
@@ -51,6 +53,102 @@ function Win(puntuacion)
     console.log(puntuacion);
     const win = document.querySelector(".congratulations");
     win.style.display = "block";
+}
+
+function vidajugador1()
+{
+    corazonun=document.getElementById("heart1_1");
+    corazondo=document.getElementById("heart1_2");
+    corazontre=document.getElementById("heart1_3");
+    corazoncua=document.getElementById("heart1_4");
+    corazoncin=document.getElementById("heart1_5");
+    
+    
+    if (LIVE_FRISTPLAYER==4) {
+        corazoncin.src="img/heart_empty.png";
+        corazoncua.src="img/heart_full.png";
+        corazontre.src="img/heart_full.png";
+        corazondo.src="img/heart_full.png";
+        corazonun.src="img/heart_full.png";
+    }
+    if (LIVE_FRISTPLAYER==3) {
+        corazoncin.src="img/heart_empty.png";
+        corazoncua.src="img/heart_empty.png";
+        corazontre.src="img/heart_full.png";
+        corazondo.src="img/heart_full.png";
+        corazonun.src="img/heart_full.png";
+    }
+    if (LIVE_FRISTPLAYER==2) {
+        corazoncin.src="img/heart_empty.png";
+        corazoncua.src="img/heart_empty.png";
+        corazontre.src="img/heart_empty.png";
+        corazondo.src="img/heart_full.png";
+        corazonun.src="img/heart_full.png";
+    }
+    if (LIVE_FRISTPLAYER==1) {
+        corazoncin.src="img/heart_empty.png";
+        corazoncua.src="img/heart_empty.png";
+        corazontre.src="img/heart_empty.png";
+        corazondo.src="img/heart_empty.png";
+        corazonun.src="img/heart_full.png";
+    }
+    if (LIVE_FRISTPLAYER==0) {
+        corazoncin.src="img/heart_empty.png";
+        corazoncua.src="img/heart_empty.png";
+        corazontre.src="img/heart_empty.png";
+        corazondo.src="img/heart_empty.png";
+        corazonun.src="img/heart_empty.png";
+        document.getElementById("cong").innerHTML = "El jugador 2 gano el juego";
+        Win(POINTS_SECONDPLAYER)
+    }
+}
+
+function vidajugador2()
+{
+    corazonun=document.getElementById("heart2_1");
+    corazondo=document.getElementById("heart2_2");
+    corazontre=document.getElementById("heart2_3");
+    corazoncua=document.getElementById("heart2_4");
+    corazoncin=document.getElementById("heart2_5");
+    
+    
+    if (LIVE_SECONDPLAYER==4) {
+        corazoncin.src="img/heart_empty.png";
+        corazoncua.src="img/heart_full.png";
+        corazontre.src="img/heart_full.png";
+        corazondo.src="img/heart_full.png";
+        corazonun.src="img/heart_full.png";
+    }
+    if (LIVE_SECONDPLAYER==3) {
+        corazoncin.src="img/heart_empty.png";
+        corazoncua.src="img/heart_empty.png";
+        corazontre.src="img/heart_full.png";
+        corazondo.src="img/heart_full.png";
+        corazonun.src="img/heart_full.png";
+    }
+    if (LIVE_SECONDPLAYER==2) {
+        corazoncin.src="img/heart_empty.png";
+        corazoncua.src="img/heart_empty.png";
+        corazontre.src="img/heart_empty.png";
+        corazondo.src="img/heart_full.png";
+        corazonun.src="img/heart_full.png";
+    }
+    if (LIVE_SECONDPLAYER==1) {
+        corazoncin.src="img/heart_empty.png";
+        corazoncua.src="img/heart_empty.png";
+        corazontre.src="img/heart_empty.png";
+        corazondo.src="img/heart_empty.png";
+        corazonun.src="img/heart_full.png";
+    }
+    if (LIVE_SECONDPLAYER==0) {
+        corazoncin.src="img/heart_empty.png";
+        corazoncua.src="img/heart_empty.png";
+        corazontre.src="img/heart_empty.png";
+        corazondo.src="img/heart_empty.png";
+        corazonun.src="img/heart_empty.png";
+        document.getElementById("cong").innerHTML = "El jugador 1 gano el juego";
+        Win(POINTS_FRISTPLAYER)
+    }
 }
 
 
@@ -273,6 +371,8 @@ function gameLoop() {
     moveEnemies();
     moveBullets();
     checkBulletCollision();
+    vidajugador1();
+    vidajugador2();
 
     requestAnimationFrame(gameLoop);
 }
