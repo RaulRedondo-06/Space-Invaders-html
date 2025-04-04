@@ -214,11 +214,9 @@ function checkBulletCollision() {
                 //Sumar 1 punto
 
                 POINTS_FRISTPLAYER = POINTS_FRISTPLAYER + 1;
-                POINTS_SECONDPLAYER = POINTS_SECONDPLAYER + 1;
+                
                 
                 document.getElementById("pun1").innerHTML = "Player 1: " + POINTS_FRISTPLAYER;
-                document.getElementById("pun2").innerHTML = "Player 2: " + POINTS_SECONDPLAYER;
-               
 
                 // "Revive" the enemy after 2 seconds
                 setTimeout(() => {
@@ -241,6 +239,9 @@ function checkBulletCollision() {
                 enemy.alive = false;
                 enemy.element.classList.add("dead");
 
+                POINTS_SECONDPLAYER = POINTS_SECONDPLAYER + 1;
+                document.getElementById("pun2").innerHTML = "Player 2: " + POINTS_SECONDPLAYER;
+                
                 // Remove bullet from game state
                 bullet.element.remove();
                 GAME_STATE.bullets2.splice(bulletIndex, 1);
