@@ -9,19 +9,35 @@
 <body>
     <div class="wrap">
         <div class="game-wrapper">
+          <div class="exterioresRed"> 
+            <h1 id= "pun1">Player 1: 0</h1>
+            <img src="img/heart_full.png" id="heart1_1" alt="">
+            <img src="img/heart_full.png" id="heart1_2" alt="">
+            <img src="img/heart_full.png" id="heart1_3" alt="">
+            <img src="img/heart_full.png" id="heart1_4" alt="">
+            <img src="img/heart_full.png" id="heart1_5" alt="">
+          </div>
           <div class="game"></div>
-          <div class="congratulations">
+          <div  class="exterioresBlue"> 
+            <h1 id= "pun2">Player 2: 0</h1>
+            <img src="img/heart_full.png" id="heart2_1" alt="">
+            <img src="img/heart_full.png" id="heart2_2" alt="">
+            <img src="img/heart_full.png" id="heart2_3" alt="">
+            <img src="img/heart_full.png" id="heart2_4" alt="">
+            <img src="img/heart_full.png" id="heart2_5" alt=""></div>
+          <div  class="congratulations">
             <h1>¡Felicidades!</h1>
-            <h2>El jugador x gano el juego</h2>
+            <h2 id="cong">El jugador X gano el juego</h2>
             <button class="btn" onclick="window.location.reload()">Restart</button>
           </div>
+          
           <div class="game-over">
             <h1>GAME OVER</h1>
             <h2>Perdisteis</h2>
             <button class="btn" onclick="window.location.reload()">Restart</button>
           </div>
         </div>
-        <footer>Pulsa "A" o "D" para moverse</footer>
+        <footer>Jugador 1: Pulsa "A" o "D" para moverse y para disparar pulse espacio, jugador 2: Pulsa "<-" o "->" para moverse y para disparar pulse "0" (panel numérico)</footer>
       </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="SP.js"></script>

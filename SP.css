@@ -64,6 +64,12 @@ footer {
   width: 40px;
 }
 
+.game .player2 {
+  position: absolute;
+  margin-left: 4px;
+  width: 40px;
+}
+
 .game .laser {
   position: absolute;
   margin-left: -2.5px;
@@ -74,6 +80,20 @@ footer {
   position: absolute;
   margin-left: -2.5px;
   height: 30px;
+}
+
+.exterioresRed {
+  position: absolute;
+  margin-left: -70%;
+  height: 20px;
+  color: red;
+}
+
+.exterioresBlue {
+  position: absolute;
+  margin-left: 70%;
+  height: 20px;
+  color: blue;
 }
 
 .congratulations {
@@ -87,6 +107,8 @@ footer {
   text-align: center;
   animation: pop-in 1s;
 }
+
+
 
 .game-over {
   display: none;
@@ -134,7 +156,18 @@ footer {
     position: absolute;
     width: 5px;
     height: 10px;
-    background-color: red;
+    background-image: url('img/bullet_player1.png');
+    background-size: cover;
+    background-position: center;
+}
+
+.bullet2 {
+  position: absolute;
+  width: 5px;
+  height: 10px;
+  background-image: url('img/bullet_player2.png');
+  background-size: cover;
+  background-position: center;
 }
 
 .enemy-laser {
