@@ -386,6 +386,33 @@ function checkBulletCollision() {
             }
         });
     });
+    GAME_STATE.enemyBullets.forEach((bullet, bulletIndex) => {
+        if (bullet.x < GAME_STATE.playerX + 42 &&
+            bullet.x + BULLET_WIDTH > GAME_STATE.playerX &&
+            bullet.y < GAME_STATE.playerY + 42 &&
+            bullet.y + BULLET_HEIGHT > GAME_STATE.playerY) {
+                
+            // Remove bullet from game state
+            bullet.element.remove();
+            GAME_STATE.enemyBullets.splice(bulletIndex, 1);
+                
+            LIVE_FRISTPLAYER= LIVE_FRISTPLAYER-1;
+            console.log(LIVE_FRISTPLAYER);
+        }
+        
+        if (bullet.x < GAME_STATE.playerX2+ 42 &&
+            bullet.x + BULLET_WIDTH > GAME_STATE.playerX2 &&
+            bullet.y < GAME_STATE.playerY2 + 42 &&
+            bullet.y + BULLET_HEIGHT > GAME_STATE.playerY2) {
+                
+            // Remove bullet from game state
+            bullet.element.remove();
+            GAME_STATE.enemyBullets.splice(bulletIndex, 1);
+                
+            LIVE_SECONDPLAYER= LIVE_SECONDPLAYER-1;
+            console.log(LIVE_SECONDPLAYER);
+        }
+    });
 }
 
 function gameLoop() {
