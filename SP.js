@@ -17,6 +17,7 @@ const GAME_STATE = {
     velocityX: 0,
     enemies: [],
     bullets: [],
+    enemyBullets: [],
     enemySpeed: 2,
     enemyDirection: 1,
     gameOver: false,
@@ -81,6 +82,39 @@ function moveEnemies() {
     if (changeDirection) {
         GAME_STATE.enemyDirection = -GAME_STATE.enemyDirection;
     }
+}
+
+function enemyShoot($container) {
+    const aliveEnemies = GAME_STATE.enemies.filter(e => e.alive);
+    if (aliveEnemies.length === 0) return;
+
+    const shooter = aliveEnemies[Math.floor(Math.random() * aliveEnemies.length)];
+    const $laser = document.createElement("div");
+    $laser.className = "enemy-laser";
+    $container.appendChild($laser);
+
+    const laserX = shooter.x + ENEMY_WIDTH / 2 - 2.5;
+    const laserY = shooter.y + ENEMY_HEIGHT;
+    GAME_STATE.enemyBullets.push({
+        element: $laser,
+        x: laserX,
+        y: laserY,
+    });
+
+    setPosition($laser, laserX, laserY);
+}
+
+function moveEnemyBullets() {
+    GAME_STATE.enemyBullets.forEach((laser, index) => {
+        laser.y += BULLET_SPEED;
+
+        if (laser.y > GAME_HEIGHT) {
+            laser.element.remove();
+            GAME_STATE.enemyBullets.splice(index, 1);
+        } else {
+            setPosition(laser.element, laser.x, laser.y);
+        }
+    });
 }
 
 function updatePlayerPosition() {
@@ -166,6 +200,7 @@ function gameLoop() {
     updatePlayerPosition();
     moveEnemies();
     moveBullets(); // 👈 añadido
+    moveEnemyBullets();
     checkBulletCollision(); // 👈 añadido
 
     requestAnimationFrame(gameLoop);
@@ -181,6 +216,10 @@ function init() {
     createPlayer($container);
     createEnemies($container);
     requestAnimationFrame(gameLoop);
+    setInterval(() => {
+        const $container = document.querySelector(".game");
+        enemyShoot($container);
+    }, 800);
 }
 
 function onKeyDown(e) {
