@@ -6,7 +6,7 @@ const ENEMY_HEIGHT = 40;
 const BULLET_WIDTH = 5;
 const BULLET_HEIGHT = 10;
 const BULLET_SPEED = 7;
-var POINTS_FRISTPLAYER = 0;
+var POINTS_FRISTPLAYER = 99;
 var POINTS_SECONDPLAYER = 0;
 var LIVE_FRISTPLAYER = 5;
 var LIVE_SECONDPLAYER = 5;
@@ -397,7 +397,6 @@ function checkBulletCollision() {
             GAME_STATE.enemyBullets.splice(bulletIndex, 1);
                 
             LIVE_FRISTPLAYER= LIVE_FRISTPLAYER-1;
-            console.log(LIVE_FRISTPLAYER);
         }
         
         if (bullet.x < GAME_STATE.playerX2+ 42 &&
@@ -410,7 +409,6 @@ function checkBulletCollision() {
             GAME_STATE.enemyBullets.splice(bulletIndex, 1);
                 
             LIVE_SECONDPLAYER= LIVE_SECONDPLAYER-1;
-            console.log(LIVE_SECONDPLAYER);
         }
     });
 }
