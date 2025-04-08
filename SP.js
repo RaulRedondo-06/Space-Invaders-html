@@ -7,7 +7,7 @@ const BULLET_WIDTH = 5;
 const BULLET_HEIGHT = 10;
 const BULLET_SPEED = 7;
 // Variables para los puntos de los jugadores
-var POINTS_FRISTPLAYER = 99;
+var POINTS_FRISTPLAYER = 0;
 var POINTS_SECONDPLAYER = 0;
 // Variables para la vida de los jugadores
 var LIVE_FRISTPLAYER = 5;
