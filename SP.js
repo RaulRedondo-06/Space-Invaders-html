@@ -21,6 +21,10 @@ const KEY_CODE_LEFT2 = 37;
 const KEY_CODE_RIGHT2 = 39;
 const KEY_CODE_ZERO = 96;
 
+const SHOOT_COOLDOWN = 150;
+let lastShoot = 0;
+let lastShoot2 = 0;
+
 // Variables para el estado del juego
 const GAME_STATE = {
     // Ubicacion de los jugadores
@@ -326,45 +330,55 @@ function updatePlayerPosition() {
 
 // Funcion para crear las balas del jugador 1
 function createBullet($container) {
-    // Creamos una bala, le ponemos una clase y la añadimos al terreno de juego
-    const $bullet = document.createElement("div");
-    $bullet.className = "bullet";
-    $container.appendChild($bullet);
+    const actualTime = Date.now();
+    if(actualTime - lastShoot >= SHOOT_COOLDOWN){
+        // Creamos una bala, le ponemos una clase y la añadimos al terreno de juego
+        const $bullet = document.createElement("div");
+        $bullet.className = "bullet";
+        $container.appendChild($bullet);
 
-    // Averiguamos donde estara la posicion inicial de la bala
-    const bulletX = GAME_STATE.playerX + 22;
-    const bulletY = GAME_STATE.playerY;
+        // Averiguamos donde estara la posicion inicial de la bala
+        const bulletX = GAME_STATE.playerX + 22;
+        const bulletY = GAME_STATE.playerY;
 
-    // Añade la bala generada dentro del Array de 'bullets' dentro de 'GAME_STATE'
-    GAME_STATE.bullets.push({
-        element: $bullet,
-        x: bulletX,
-        y: bulletY,
-    });
+        // Añade la bala generada dentro del Array de 'bullets' dentro de 'GAME_STATE'
+        GAME_STATE.bullets.push({
+            element: $bullet,
+            x: bulletX,
+            y: bulletY,
+        });
 
-    // Posicionamos la bala en el lugar indicado
-    setPosition($bullet, bulletX, bulletY);
+        // Posicionamos la bala en el lugar indicado
+        setPosition($bullet, bulletX, bulletY);
+        lastShoot = actualTime;
+    }
 }
 
 // Funcion para crear las balas del jugador 2
 function createBullet2($container) {
-    // Creamos una bala, le ponemos una clase y la añadimos al terreno de juego
-    const $bullet = document.createElement("div");
-    $bullet.className = "bullet2";
-    $container.appendChild($bullet);
+    const actualTime = Date.now();
+    
+    if(actualTime - lastShoot2 >= SHOOT_COOLDOWN){
+        // Creamos una bala, le ponemos una clase y la añadimos al terreno de juego
+        const $bullet = document.createElement("div");
+        $bullet.className = "bullet2";
+        $container.appendChild($bullet);
 
-    // Averiguamos donde estara la posicion inicial de la bala
-    const bulletX = GAME_STATE.playerX2 + 22;
-    const bulletY = GAME_STATE.playerY2;
+        // Averiguamos donde estara la posicion inicial de la bala
+        const bulletX = GAME_STATE.playerX2 + 22;
+        const bulletY = GAME_STATE.playerY2;
 
-    // Añade la bala generada dentro del Array de 'bullets2' dentro de 'GAME_STATE'
-    GAME_STATE.bullets2.push({
-        element: $bullet,
-        x: bulletX,
-        y: bulletY,
-    });
+        // Añade la bala generada dentro del Array de 'bullets2' dentro de 'GAME_STATE'
+        GAME_STATE.bullets2.push({
+            element: $bullet,
+            x: bulletX,
+            y: bulletY,
+        });
 
-    setPosition($bullet, bulletX, bulletY);
+        setPosition($bullet, bulletX, bulletY);
+        lastShoot2 = actualTime;
+    }
+    
 }
 
 // Funcion para mover las balas
